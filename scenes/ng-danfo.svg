@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" stroke="black" stroke-width="2" fill="none">
+  <rect x="15" y="30" width="70" height="40" rx="5" /> <!-- bus body -->
+  <rect x="20" y="35" width="20" height="15" /> <!-- front window -->
+  <rect x="45" y="35" width="20" height="15" /> <!-- middle window -->
+  <rect x="70" y="35" width="10" height="15" /> <!-- back window -->
+  <circle cx="30" cy="70" r="8" /> <!-- front wheel -->
+  <circle cx="70" cy="70" r="8" /> <!-- back wheel -->
+  <path d="M 15 50 L 85 50" /> <!-- side stripe -->
+</svg>

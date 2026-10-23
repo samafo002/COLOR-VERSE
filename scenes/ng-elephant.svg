@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" stroke="black" stroke-width="2" fill="none">
+  <path d="M 30 70 Q 20 40 50 30 Q 80 40 70 70" /> <!-- body/head -->
+  <path d="M 50 70 Q 45 85 55 90" /> <!-- trunk -->
+  <path d="M 35 45 Q 25 50 20 40 Q 30 35 40 40" /> <!-- left ear -->
+  <path d="M 65 45 Q 75 50 80 40 Q 70 35 60 40" /> <!-- right ear -->
+  <circle cx="45" cy="45" r="2" fill="black" /> <!-- left eye -->
+  <circle cx="55" cy="45" r="2" fill="black" /> <!-- right eye -->
+  <path d="M 30 70 L 30 90" /> <!-- left leg -->
+  <path d="M 70 70 L 70 90" /> <!-- right leg -->
+  <path d="M 70 60 Q 80 50 75 45" /> <!-- tail -->
+</svg>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="ColorVerse — Color your culture. AI + pre-made scenes from around the world." />
+  <meta name="theme-color" content="#7c5cff" />
+  <title>ColorVerse — Color Your Culture</title>
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-logo">🎨</span>
+      <span class="brand-name">ColorVerse</span>
+    </div>
+
+    <div class="topbar-actions">
+      <button id="btn-auth" class="primary" style="display: flex; align-items: center; gap: 4px;">
+        👤 Sign In
+      </button>
+
+      <button id="btn-streak" class="pill" title="Your daily streak">
+        🔥<span id="streak-count">0</span>
+      </button>
+      <button id="btn-streak" class="pill" title="Your daily streak">
+        🔥<span id="streak-count">0</span>
+      </button>
+      <button id="btn-quota" class="pill" title="Free pages today">
+        <span class="dot"></span>
+        <span id="quota-text">5/5 free today</span>
+      </button>
+      <button id="btn-undo" title="Undo">↶</button>
+      <button id="btn-redo" title="Redo">↷</button>
+      <button id="btn-clear" title="Clear">🗑️</button>
+      <button id="btn-save" class="primary" title="Save painting">💾 Save</button>
+      <button id="btn-share" title="Share">📤</button>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <aside class="panel left-panel">
+
+      <section id="challenge-card" class="challenge-card hidden">
+        <div class="ch-head">
+          <span id="ch-emoji" class="ch-emoji">🎯</span>
+          <div>
+            <div class="ch-title">Today's Challenge</div>
+            <div id="ch-name" class="ch-name">Loading…</div>
+          </div>
+        </div>
+        <div id="ch-meta" class="ch-meta">+3 bonus pages</div>
+        <button id="ch-start" class="primary small">🎨 Paint it</button>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2><span id="country-flag">🌍</span> <span id="country-label">Detecting…</span></h2>
+          <select id="country-select" class="mini-select" aria-label="Choose country"></select>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h3>Category</h3>
+        </div>
+        <div id="category-tabs" class="category-tabs">
+        </div>
+      </section>
+
+      <section class="section grow">
+        <div class="section-head">
+          <h3 id="scene-grid-title">Scenes</h3>
+          <span id="scene-count" class="muted small"></span>
+        </div>
+        <div id="scene-grid" class="scene-grid">
+        </div>
+      </section>
+
+      <section class="section">
+        <details class="ai-details">
+          <summary>✨ Or generate with AI</summary>
+          <textarea id="ai-prompt" rows="2" placeholder="e.g. a dragon eating ice cream"></textarea>
+          <button id="ai-generate" class="primary small">Generate (costs 1 page)</button>
+          <div id="ai-status" class="status"></div>
+        </details>
+      </section>
+    </aside>
+
+    <section class="canvas-area" id="canvas-area">
+      <div class="canvas-stack" id="canvas-stack">
+        <canvas id="bg-canvas"></canvas>
+        <canvas id="draw-canvas"></canvas>
+        <canvas id="overlay-canvas"></canvas>
+      </div>
+      <div id="empty-state" class="empty-state">
+        <div class="empty-emoji">🎨</div>
+        <h2>Pick a scene to start coloring</h2>
+        <p>Choose from the left, or use AI to generate your own.</p>
+      </div>
+
+      <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p id="loading-text">Generating your scene…</p>
+      </div>
+    </section>
+
+    <aside class="panel right-panel">
+
+      <section class="section">
+        <h3>Tools</h3>
+        <div class="tool-group">
+          <button class="tool active" data-tool="brush" title="Brush">🖌️</button>
+          <button class="tool" data-tool="fill" title="Fill">🪣</button>
+          <button class="tool" data-tool="eraser" title="Eraser">🧽</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <label>Size: <span id="size-label">6</span>px</label>
+        <input type="range" id="size" min="1" max="60" value="6" />
+
+        <label>Opacity: <span id="opacity-label">100</span>%</label>
+        <input type="range" id="opacity" min="1" max="100" value="100" />
+      </section>
+
+      <section class="section">
+        <label>Color</label>
+        <input type="color" id="color" value="#e63946" />
+        <div id="swatches" class="swatches"></div>
+      </section>
+
+      <section class="section">
+        <h3>Music</h3>
+        <button id="music-toggle" class="ghost small">▶ Play music</button>
+        <div id="music-channels" class="music-channels"></div>
+      </section>
+
+      <section class="section">
+        <h3>Layers</h3>
+        <div id="layer-list" class="layer-list"></div>
+        <button id="layer-add" class="ghost small">＋ Add layer</button>
+      </section>
+
+    </aside>
+  </main>
+
+  <div id="paywall" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal paywall">
+      <h2 id="paywall-title">You've used your free pages today</h2>
+      <p class="muted" id="paywall-sub">Watch a quick ad to get +1 more, or unlock a bundle.</p>
+
+      <button id="paywall-ad" class="primary big">▶ Watch ad for +1 page</button>
+
+      <div class="tiers">
+        <div class="tier" data-tier="starter">
+          <div class="tier-name">Starter</div>
+          <div class="tier-pages">100 pages</div>
+          <div class="tier-price">₦2,500/mo</div>
+          <button class="primary small">Choose</button>
+        </div>
+        <div class="tier plus" data-tier="plus">
+          <div class="tier-name">Plus</div>
+          <div class="tier-pages">300 pages</div>
+          <div class="tier-price">₦5,000/mo</div>
+          <button class="primary small">Choose</button>
+        </div>
+        <div class="tier pro" data-tier="pro">
+          <div class="tier-name">Pro ✨</div>
+          <div class="tier-pages">Unlimited</div>
+          <div class="tier-price">₦12,000/mo</div>
+          <button class="primary small">Choose</button>
+        </div>
+      </div>
+
+      <button id="paywall-close" class="ghost">Not now</button>
+    </div>
+  </div>
+
+  <div id="share-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal share">
+      <h2>Share your painting</h2>
+      <p class="muted" id="share-sub">Watch a quick ad to unlock sharing.</p>
+
+      <button id="share-unlock" class="primary big">▶ Unlock sharing (15s ad)</button>
+
+      <div id="share-ready" class="share-grid hidden">
+        <button class="share-wa">💬 WhatsApp</button>
+        <button class="share-tt">🎵 TikTok</button>
+        <button class="share-copy">🔗 Copy link</button>
+      </div>
+
+      <div id="share-link" class="link-preview hidden"></div>
+
+      <button id="share-close" class="ghost">Close</button>
+    </div>
+  </div>
+  <div id="auth-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 380px;">
+      <h2 id="auth-title">Welcome to ColorVerse</h2>
+      <p class="muted" id="auth-sub">Sign in to save your art to the cloud.</p>
+
+      <div id="auth-error" class="hidden" style="color: #ff5c7a; font-size: 0.8rem; margin-bottom: 10px; background: rgba(255,92,122,0.1); padding: 8px; border-radius: 6px;"></div>
+
+      <form id="auth-form" style="display: flex; flex-direction: column; gap: 10px;">
+        <input type="email" id="auth-email" placeholder="Email address" required style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-2); background: var(--panel-2); color: white;" />
+        <input type="password" id="auth-password" placeholder="Password" required minlength="6" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border-2); background: var(--panel-2); color: white;" />
+        <button type="submit" id="auth-submit" class="primary" style="margin-top: 10px;">Sign In</button>
+      </form>
+
+      <div style="text-align: center; margin-top: 14px; font-size: 0.8rem;">
+        <span class="muted" id="auth-switch-text">Don't have an account?</span>
+        <button id="auth-switch-btn" style="color: var(--accent-2); text-decoration: underline;">Sign up</button>
+      </div>
+
+      <button id="auth-close" class="ghost" style="width: 100%; margin-top: 10px;">Cancel</button>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js" defer></script>
+  
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js")
+          .then(() => console.log("Service Worker registered! App is now offline-ready."))
+          .catch((err) => console.log("Service Worker failed:", err));
+      });
+    }
+  </script>
+</body>
+</body>
+</html>
