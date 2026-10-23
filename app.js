@@ -10,7 +10,7 @@
     HISTORY_LIMIT: 30,
     SCENES_BASE: "./scenes/",
     MUSIC_BASE: "./music/",
-    API_BASE: "http://localhost:4000/api",
+    API_BASE: "https://colorverse-backend-k6b8.onrender.com/api",
   };
 
   const PALETTE = [
